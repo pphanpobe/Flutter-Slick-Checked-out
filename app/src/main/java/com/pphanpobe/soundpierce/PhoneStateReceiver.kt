@@ -9,9 +9,10 @@ import android.util.Log
 
 /**
  * ตรวจจับสายโทรเข้า:
- *  - RINGING: ถ้าเครื่องอยู่โหมดสั่น/เงียบ -> บังคับ ringer เป็นปกติ + ตั้งระดับเสียง
- *             เพื่อให้เสียงเรียกเข้าปกติของเครื่องดังตามเดิม
- *  - OFFHOOK/IDLE: คืนค่า ringer mode เดิม
+ *  - RINGING: ถ้าเครื่องอยู่โหมดสั่น/เงียบ -> เล่นเสียงเรียกเข้าผ่านสตรีม ALARM
+ *             (ดังทะลุโหมดสั่น) โดย **ไม่แตะ ringer mode ของเครื่องเลย**
+ *             เครื่องจึงคงเป็นโหมดสั่นเหมือนเดิมตลอด ไม่มีทางค้างเป็นโหมดเสียง
+ *  - OFFHOOK (รับสาย) / IDLE (วางสาย/สายหลุด): หยุดเสียง
  */
 class PhoneStateReceiver : BroadcastReceiver() {
 
@@ -25,42 +26,18 @@ class PhoneStateReceiver : BroadcastReceiver() {
         val am = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager ?: return
 
         when (state) {
-            TelephonyManager.EXTRA_STATE_RINGING -> forceRing(prefs, am)
+            TelephonyManager.EXTRA_STATE_RINGING -> {
+                // ในโหมดปกติ เครื่องมีเสียงเรียกเข้าของมันเองอยู่แล้ว จัดการเฉพาะโหมดสั่น/เงียบ
+                if (am.ringerMode != AudioManager.RINGER_MODE_NORMAL) {
+                    Log.d(TAG, "Incoming call in silent/vibrate -> play alarm ringtone")
+                    SoundPlayer.startCallRinging(context)
+                }
+            }
             TelephonyManager.EXTRA_STATE_OFFHOOK,
-            TelephonyManager.EXTRA_STATE_IDLE -> restore(prefs, am)
-        }
-    }
-
-    private fun forceRing(prefs: Prefs, am: AudioManager) {
-        if (am.ringerMode == AudioManager.RINGER_MODE_NORMAL) return
-
-        // จำโหมดเดิมไว้เพื่อคืนค่าภายหลัง
-        if (!prefs.ringerOverridden) {
-            prefs.savedRingerMode = am.ringerMode
-            prefs.ringerOverridden = true
-        }
-
-        try {
-            am.ringerMode = AudioManager.RINGER_MODE_NORMAL
-            val max = am.getStreamMaxVolume(AudioManager.STREAM_RING)
-            val target = (max * prefs.callVolumePercent / 100).coerceAtLeast(1)
-            am.setStreamVolume(AudioManager.STREAM_RING, target, 0)
-            Log.d(TAG, "Forced ring ON (target volume=$target/$max)")
-        } catch (e: SecurityException) {
-            // ต้องได้สิทธิ์ ACCESS_NOTIFICATION_POLICY (Do Not Disturb access)
-            Log.w(TAG, "Cannot change ringer: ${e.message}")
-        }
-    }
-
-    private fun restore(prefs: Prefs, am: AudioManager) {
-        if (!prefs.ringerOverridden) return
-        try {
-            am.ringerMode = prefs.savedRingerMode
-            Log.d(TAG, "Restored ringer mode to ${prefs.savedRingerMode}")
-        } catch (e: Exception) {
-            Log.w(TAG, "Cannot restore ringer: ${e.message}")
-        } finally {
-            prefs.ringerOverridden = false
+            TelephonyManager.EXTRA_STATE_IDLE -> {
+                Log.d(TAG, "Call answered/ended -> stop ringtone (state=$state)")
+                SoundPlayer.stopCallRinging()
+            }
         }
     }
 

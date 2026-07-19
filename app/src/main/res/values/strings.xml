@@ -15,7 +15,7 @@
 
     <string name="section_perms">สิทธิ์ที่จำเป็น</string>
     <string name="perm_notif">การเข้าถึงการแจ้งเตือน (สำหรับ LINE)</string>
-    <string name="perm_dnd">การเข้าถึง Do Not Disturb (ปรับเสียง)</string>
+    <string name="perm_dnd">การเข้าถึง Do Not Disturb (ไม่บังคับ)</string>
     <string name="perm_phone">สิทธิ์อ่านสถานะโทรศัพท์ (สำหรับสายเข้า)</string>
 
     <string name="grant">ตั้งค่า</string>
@@ -26,5 +26,5 @@
     <string name="testing_sound">กำลังทดสอบเสียง…</string>
     <string name="saved">บันทึกแล้ว</string>
 
-    <string name="footer_note">หมายเหตุ: ต้องอนุญาต \"การเข้าถึงการแจ้งเตือน\" เพื่อให้ LINE ทำงาน และอนุญาต \"Do Not Disturb\" เพื่อบังคับเสียงสายเข้าขณะเปิดโหมดเงียบ</string>
+    <string name="footer_note">หมายเหตุ: ต้องอนุญาต \"การเข้าถึงการแจ้งเตือน\" เพื่อให้ LINE ทำงาน และ \"สิทธิ์อ่านสถานะโทรศัพท์\" สำหรับสายเข้า • แอปจะเล่นเสียงทับผ่านช่องเสียงปลุก โดยไม่เปลี่ยนโหมดเครื่อง เครื่องจึงคงเป็นโหมดสั่นตลอด (Do Not Disturb ไม่จำเป็นแล้ว)</string>
 </resources>
