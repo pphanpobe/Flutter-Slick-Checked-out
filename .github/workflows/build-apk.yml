@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -38,9 +38,26 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleDebug --stacktrace --no-daemon
 
+      - name: Rename APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk SoundPierce.apk
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: SoundPierce-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: SoundPierce.apk
           if-no-files-found: error
+
+      - name: Publish Release with APK
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: app-latest
+          name: SoundPierce (latest debug build)
+          body: |
+            APK รุ่นล่าสุดของแอป "เสียงทะลุโหมดสั่น"
+            ทำให้ LINE และสายโทรเข้ามีเสียงเรียกเข้าเสมอ แม้เปิดโหมดสั่น/เงียบ
+
+            ดาวน์โหลดไฟล์ `SoundPierce.apk` ด้านล่างแล้วติดตั้งได้เลย
+          files: SoundPierce.apk
+          make_latest: true
