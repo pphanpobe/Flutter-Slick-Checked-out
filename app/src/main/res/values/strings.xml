@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">เสียงทะลุโหมดสั่น</string>
+    <string name="app_desc">ให้ LINE และสายโทรเข้ามีเสียงเรียกเข้าเสมอ แม้เปิดโหมดสั่น/เงียบ</string>
+
+    <string name="enable_all">เปิดใช้งานทั้งหมด</string>
+
+    <string name="section_apps">เลือกสิ่งที่ต้องการให้มีเสียง</string>
+    <string name="opt_line">LINE มีเสียงเรียกเข้าเสมอ</string>
+    <string name="opt_call">สายโทรเข้าปกติมีเสียงเสมอ</string>
+
+    <string name="extra_hint">แอปเพิ่มเติม (ใส่ชื่อแพ็กเกจ คั่นด้วย , หรือขึ้นบรรทัดใหม่)</string>
+    <string name="extra_placeholder">เช่น com.facebook.orca, com.whatsapp</string>
+    <string name="save_extra">บันทึกรายชื่อแอป</string>
+
+    <string name="section_perms">สิทธิ์ที่จำเป็น</string>
+    <string name="perm_notif">การเข้าถึงการแจ้งเตือน (สำหรับ LINE)</string>
+    <string name="perm_dnd">การเข้าถึง Do Not Disturb (ปรับเสียง)</string>
+    <string name="perm_phone">สิทธิ์อ่านสถานะโทรศัพท์ (สำหรับสายเข้า)</string>
+
+    <string name="grant">ตั้งค่า</string>
+    <string name="granted">✔ อนุญาตแล้ว</string>
+    <string name="not_granted">✘ ยังไม่อนุญาต — แตะปุ่มตั้งค่า</string>
+
+    <string name="test_sound">ทดสอบเสียงเรียกเข้า</string>
+    <string name="testing_sound">กำลังทดสอบเสียง…</string>
+    <string name="saved">บันทึกแล้ว</string>
+
+    <string name="footer_note">หมายเหตุ: ต้องอนุญาต \"การเข้าถึงการแจ้งเตือน\" เพื่อให้ LINE ทำงาน และอนุญาต \"Do Not Disturb\" เพื่อบังคับเสียงสายเข้าขณะเปิดโหมดเงียบ</string>
+</resources>
