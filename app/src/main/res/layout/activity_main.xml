@@ -56,6 +56,15 @@
             android:textSize="16sp" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/sw_line_calls_only"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/opt_line_calls_only"
+            android:textSize="14sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_call"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -7,6 +7,7 @@
 
     <string name="section_apps">เลือกสิ่งที่ต้องการให้มีเสียง</string>
     <string name="opt_line">LINE มีเสียงเรียกเข้าเสมอ</string>
+    <string name="opt_line_calls_only">LINE: เฉพาะสายโทรเข้า (ไม่เอาแจ้งเตือนแชท)</string>
     <string name="opt_call">สายโทรเข้าปกติมีเสียงเสมอ</string>
 
     <string name="extra_hint">แอปเพิ่มเติม (ใส่ชื่อแพ็กเกจ คั่นด้วย , หรือขึ้นบรรทัดใหม่)</string>

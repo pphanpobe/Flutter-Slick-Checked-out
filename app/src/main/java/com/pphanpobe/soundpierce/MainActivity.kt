@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var swMaster: SwitchMaterial
     private lateinit var swLine: SwitchMaterial
+    private lateinit var swLineCallsOnly: SwitchMaterial
     private lateinit var swCall: SwitchMaterial
     private lateinit var etExtra: EditText
 
@@ -42,16 +43,19 @@ class MainActivity : AppCompatActivity() {
 
         swMaster = findViewById(R.id.sw_master)
         swLine = findViewById(R.id.sw_line)
+        swLineCallsOnly = findViewById(R.id.sw_line_calls_only)
         swCall = findViewById(R.id.sw_call)
         etExtra = findViewById(R.id.et_extra)
 
         swMaster.isChecked = prefs.masterEnabled
         swLine.isChecked = prefs.lineEnabled
+        swLineCallsOnly.isChecked = prefs.lineCallsOnly
         swCall.isChecked = prefs.callEnabled
         etExtra.setText(prefs.extraPackagesRaw)
 
         swMaster.setOnCheckedChangeListener { _, v -> prefs.masterEnabled = v }
         swLine.setOnCheckedChangeListener { _, v -> prefs.lineEnabled = v }
+        swLineCallsOnly.setOnCheckedChangeListener { _, v -> prefs.lineCallsOnly = v }
         swCall.setOnCheckedChangeListener { _, v -> prefs.callEnabled = v }
 
         findViewById<Button>(R.id.btn_notif).setOnClickListener {

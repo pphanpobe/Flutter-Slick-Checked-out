@@ -21,6 +21,11 @@ class Prefs(context: Context) {
         get() = sp.getBoolean(KEY_LINE, true)
         set(v) = sp.edit().putBoolean(KEY_LINE, v).apply()
 
+    /** LINE: เล่นเสียงเฉพาะสายโทรเข้า (ไม่รวมแจ้งเตือนแชท) */
+    var lineCallsOnly: Boolean
+        get() = sp.getBoolean(KEY_LINE_CALLS_ONLY, true)
+        set(v) = sp.edit().putBoolean(KEY_LINE_CALLS_ONLY, v).apply()
+
     /** ให้สายโทรเข้าปกติมีเสียงเสมอ */
     var callEnabled: Boolean
         get() = sp.getBoolean(KEY_CALL, true)
@@ -62,6 +67,7 @@ class Prefs(context: Context) {
         private const val NAME = "sound_pierce_prefs"
         private const val KEY_MASTER = "master_enabled"
         private const val KEY_LINE = "line_enabled"
+        private const val KEY_LINE_CALLS_ONLY = "line_calls_only"
         private const val KEY_CALL = "call_enabled"
         private const val KEY_CALL_VOL = "call_volume_percent"
         private const val KEY_EXTRA = "extra_packages"
