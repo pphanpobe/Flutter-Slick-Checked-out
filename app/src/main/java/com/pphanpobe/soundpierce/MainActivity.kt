@@ -82,6 +82,8 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         refreshStatus()
+        // กันพลาด: คืนค่าระดับเสียงมีเดียถ้าถูกดันค้างไว้จากรอบก่อน
+        SoundPlayer.restoreMediaVolumeIfIdle(this)
     }
 
     private fun refreshStatus() {

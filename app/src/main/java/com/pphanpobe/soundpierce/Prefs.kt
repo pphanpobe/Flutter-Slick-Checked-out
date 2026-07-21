@@ -41,6 +41,11 @@ class Prefs(context: Context) {
         get() = sp.getString(KEY_EXTRA, "") ?: ""
         set(v) = sp.edit().putString(KEY_EXTRA, v).apply()
 
+    /** ระดับเสียงมีเดียเดิมก่อนถูกดันขึ้น (-1 = ไม่ได้ดันอยู่) ใช้ตอนคืนค่า */
+    var savedMediaVolume: Int
+        get() = sp.getInt(KEY_SAVED_MEDIA_VOL, -1)
+        set(v) = sp.edit().putInt(KEY_SAVED_MEDIA_VOL, v).apply()
+
     /** ringer mode เดิมก่อนถูกบังคับให้ดัง (ใช้ตอนคืนค่า) */
     var savedRingerMode: Int
         get() = sp.getInt(KEY_SAVED_RINGER, AudioManager.RINGER_MODE_NORMAL)
