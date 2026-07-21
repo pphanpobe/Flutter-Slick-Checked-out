@@ -12,8 +12,9 @@ import android.os.Looper
 import android.os.SystemClock
 
 /**
- * เล่นเสียงเรียกเข้าผ่าน "usage = ALARM" เพื่อให้ดังแม้เครื่องอยู่ในโหมดสั่น/เงียบ
- * (สตรีม ALARM ไม่ถูกปิดเสียงโดยโหมดสั่น ต่างจากสตรีม RING/NOTIFICATION)
+ * เล่นเสียงเรียกเข้าผ่าน "usage = MEDIA" เพื่อให้ดังแม้เครื่องอยู่ในโหมดสั่น/เงียบ
+ * (สตรีม MEDIA ไม่ถูกปิดเสียงโดยโหมดสั่น เช่นเดียวกับ ALARM แต่ **ไม่ไปยุ่ง
+ *  กับช่องนาฬิกาปลุกของระบบ** จึงไม่ทำให้เสียงปลุกจริงเงียบ)
  *
  * แยกเป็น 2 กรณี:
  *  - play(): เสียงสั้น ๆ สำหรับ notification เช่น LINE
@@ -27,9 +28,9 @@ object SoundPlayer {
     private var callPlayer: MediaPlayer? = null
     private var lastPlayAt = 0L
 
-    private fun alarmAttrs(): AudioAttributes = AudioAttributes.Builder()
-        .setUsage(AudioAttributes.USAGE_ALARM)
-        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+    private fun soundAttrs(): AudioAttributes = AudioAttributes.Builder()
+        .setUsage(AudioAttributes.USAGE_MEDIA)
+        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
         .build()
 
     private fun ringtoneUri(context: Context): Uri =
@@ -53,7 +54,7 @@ object SoundPlayer {
         stopRingtone()
 
         val r = RingtoneManager.getRingtone(context.applicationContext, ringtoneUri(context)) ?: return
-        r.audioAttributes = alarmAttrs()
+        r.audioAttributes = soundAttrs()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             r.isLooping = true
         }
@@ -78,7 +79,7 @@ object SoundPlayer {
 
         val mp = MediaPlayer()
         try {
-            mp.setAudioAttributes(alarmAttrs())
+            mp.setAudioAttributes(soundAttrs())
             mp.setDataSource(context.applicationContext, ringtoneUri(context))
             mp.isLooping = true
             mp.prepare()
