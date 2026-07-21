@@ -76,6 +76,7 @@ class Prefs(context: Context) {
         private const val KEY_CALL = "call_enabled"
         private const val KEY_CALL_VOL = "call_volume_percent"
         private const val KEY_EXTRA = "extra_packages"
+        private const val KEY_SAVED_MEDIA_VOL = "saved_media_volume"
         private const val KEY_SAVED_RINGER = "saved_ringer_mode"
         private const val KEY_OVERRIDDEN = "ringer_overridden"
 
