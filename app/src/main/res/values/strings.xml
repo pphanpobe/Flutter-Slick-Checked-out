@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Slick BT Keyboard</string>
+
+    <!-- SDP record the host sees -->
+    <string name="hid_name" translatable="false">Slick Keyboard</string>
+    <string name="hid_description" translatable="false">Phone as Bluetooth Keyboard</string>
+    <string name="hid_provider" translatable="false">Slick</string>
+
+    <string name="notification_channel">สถานะการเชื่อมต่อ</string>
+
+    <string name="status_idle">ยังไม่เริ่มทำงาน</string>
+    <string name="status_starting">กำลังเริ่มระบบ…</string>
+    <string name="status_ready">พร้อมแล้ว — เลือกอุปกรณ์เพื่อเชื่อมต่อ</string>
+    <string name="status_connecting">กำลังเชื่อมต่อ…</string>
+    <string name="status_connected">เชื่อมต่อกับ %1$s แล้ว</string>
+    <string name="status_connected_short">เชื่อมต่อแล้ว — พิมพ์ได้เลย</string>
+
+    <string name="action_start">เริ่มระบบ</string>
+    <string name="action_connect">เลือกอุปกรณ์</string>
+    <string name="action_disconnect">ตัดการเชื่อมต่อ</string>
+    <string name="action_discoverable">ให้คอมมองเห็น</string>
+    <string name="action_send_text">ส่งข้อความยาว</string>
+    <string name="action_send">ส่ง</string>
+    <string name="action_cancel">ยกเลิก</string>
+
+    <string name="pick_device">เลือกคอมพิวเตอร์ที่จับคู่ไว้</string>
+    <string name="no_paired_devices">ยังไม่มีอุปกรณ์ที่จับคู่ไว้ — กด \"ให้คอมมองเห็น\" แล้วจับคู่จากฝั่งคอมก่อน</string>
+
+    <string name="capture_hint">แตะที่นี่แล้วพิมพ์ด้วยคีย์บอร์ดของเครื่องคุณ\nทุกตัวอักษรจะถูกส่งไปที่คอมทันที</string>
+    <string name="capture_title">พื้นที่พิมพ์</string>
+
+    <string name="send_text_title">ส่งข้อความทั้งก้อน</string>
+    <string name="send_text_hint">พิมพ์หรือวางข้อความที่นี่</string>
+
+    <string name="mod_ctrl" translatable="false">Ctrl</string>
+    <string name="mod_alt" translatable="false">Alt</string>
+    <string name="mod_shift" translatable="false">Shift</string>
+    <string name="mod_gui" translatable="false">Win</string>
+
+    <string name="key_esc" translatable="false">Esc</string>
+    <string name="key_tab" translatable="false">Tab</string>
+    <string name="key_backspace" translatable="false">⌫</string>
+    <string name="key_enter" translatable="false">⏎</string>
+    <string name="key_delete" translatable="false">Del</string>
+    <string name="key_up" translatable="false">↑</string>
+    <string name="key_down" translatable="false">↓</string>
+    <string name="key_left" translatable="false">←</string>
+    <string name="key_right" translatable="false">→</string>
+    <string name="key_home" translatable="false">Home</string>
+    <string name="key_end" translatable="false">End</string>
+    <string name="key_page_up" translatable="false">PgUp</string>
+    <string name="key_page_down" translatable="false">PgDn</string>
+    <string name="key_print_screen" translatable="false">PrtSc</string>
+    <string name="key_menu" translatable="false">Menu</string>
+
+    <string name="hint_modifier_lock">แตะ = ใช้กับปุ่มถัดไป, กดค้าง = ล็อกไว้</string>
+    <string name="modifier_locked">ล็อก %1$s แล้ว</string>
+
+    <string name="log_no_bluetooth">เครื่องนี้ไม่รองรับบลูทูธ</string>
+    <string name="log_registered">ลงทะเบียนเป็นคีย์บอร์ดสำเร็จ</string>
+    <string name="log_unregistered">ยกเลิกการลงทะเบียนคีย์บอร์ดแล้ว</string>
+    <string name="log_register_failed">ลงทะเบียนคีย์บอร์ดไม่สำเร็จ — เครื่องนี้อาจไม่รองรับ HID Device</string>
+    <string name="log_permission_missing">ไม่ได้รับสิทธิ์บลูทูธ</string>
+    <string name="log_not_registered">ยังไม่ได้ลงทะเบียน — กด \"เริ่มระบบ\" ก่อน</string>
+    <string name="log_connect_failed">เชื่อมต่อไม่สำเร็จ</string>
+    <string name="log_unplugged">คอมยกเลิกการเชื่อมต่อคีย์บอร์ดแล้ว</string>
+    <string name="log_not_connected">ยังไม่ได้เชื่อมต่อกับคอม</string>
+    <string name="log_dropped_chars">ส่งไม่ได้ %1$d ตัวอักษร (ต้องสลับภาษาที่ฝั่งคอม)</string>
+    <string name="log_bluetooth_off">กรุณาเปิดบลูทูธก่อน</string>
+    <string name="log_permission_required">แอปต้องการสิทธิ์บลูทูธจึงจะทำงานได้</string>
+</resources>
