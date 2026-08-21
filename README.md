@@ -59,14 +59,21 @@ IME ของผู้ใช้ ──▶ KeyCaptureView ──▶ UsKeymap / Th
 ไฟล์ APK ถูก build อัตโนมัติด้วย GitHub Actions ทุกครั้งที่มี push
 (ดู [`.github/workflows/build-apk.yml`](.github/workflows/build-apk.yml))
 
-โหลดได้จากแท็บ **Actions → เลือก run ล่าสุด → Artifacts**:
+**โหลด APK ล่าสุด** (กดจากมือถือได้เลย ได้ไฟล์ `.apk` ตรง ๆ ไม่ต้องแตกไฟล์):
 
-| Artifact | ไฟล์ |
+<https://github.com/pphanpobe/Flutter-Slick-Checked-out/releases/tag/keyboard-latest>
+
+| ไฟล์ | ใช้ตอนไหน |
 | --- | --- |
-| `slick-bt-keyboard-debug` | `slick-bt-keyboard-debug.apk` |
-| `slick-bt-keyboard-release` | `slick-bt-keyboard-release.apk` |
+| `slick-bt-keyboard-release.apk` | ใช้งานปกติ |
+| `slick-bt-keyboard-debug.apk` | เวลาต้องดู log |
 
-ถ้า push tag ที่ขึ้นต้นด้วย `v` (เช่น `v1.0`) workflow จะสร้าง GitHub Release แนบ APK ให้ด้วย
+ลิงก์นี้ชี้ไปที่ release `keyboard-latest` ซึ่งถูกอัปเดตทุกครั้งที่ build ผ่าน — URL ไม่เปลี่ยน
+
+> artifact ในแท็บ **Actions** ก็ยังมีอยู่ แต่ถูกบีบเป็น `.zip` และกดโหลดจากมือถือไม่ได้
+> ให้ใช้ลิงก์ release ด้านบนแทน
+
+ถ้า push tag ที่ขึ้นต้นด้วย `v` (เช่น `v1.0`) workflow จะสร้าง GitHub Release แยกอีกอันแนบ APK ให้ด้วย
 
 Build เองบนเครื่อง:
 

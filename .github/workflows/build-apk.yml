@@ -66,6 +66,28 @@ jobs:
           path: artifacts/slick-bt-keyboard-release.apk
           if-no-files-found: error
 
+      # Actions artifacts are zipped and cannot be downloaded from a phone, so
+      # every build also refreshes a release whose assets are the bare APKs.
+      - name: Publish rolling download
+        if: >-
+          github.event_name == 'push' &&
+          !startsWith(github.ref, 'refs/tags/') &&
+          (github.ref_name == 'main' ||
+           github.ref_name == 'claude/android-mobile-keyboard-app-a1tfg4')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: keyboard-latest
+          name: Slick BT Keyboard (latest build)
+          body: |
+            APK ล่าสุด build จาก `${{ github.sha }}`
+
+            - `slick-bt-keyboard-release.apk` — แนะนำให้ใช้ตัวนี้
+            - `slick-bt-keyboard-debug.apk` — มี log สำหรับ debug
+
+            แตะที่ไฟล์ด้านล่างเพื่อโหลดและติดตั้งได้เลย
+            (ต้องอนุญาต "ติดตั้งแอปที่ไม่รู้จัก" ให้เบราว์เซอร์ก่อน)
+          files: artifacts/*.apk
+
       - name: Publish release on tag
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
