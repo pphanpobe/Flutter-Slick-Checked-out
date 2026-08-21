@@ -10,10 +10,16 @@ on:
 permissions:
   contents: write
 
+# A newer push supersedes an in-flight build of the same ref.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Assemble debug + release APK
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
@@ -27,15 +33,17 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        with:
+          packages: "platform-tools platforms;android-35 build-tools;35.0.0"
+          accept-android-sdk-licenses: true
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # Redirecting stdin from /dev/null keeps any unexpected prompt from
+      # parking the runner until the job times out.
       - name: Build APKs
-        run: ./gradlew assembleDebug assembleRelease --stacktrace
+        run: ./gradlew assembleDebug assembleRelease --no-daemon --console=plain --stacktrace < /dev/null
 
       - name: Collect APKs
         run: |
