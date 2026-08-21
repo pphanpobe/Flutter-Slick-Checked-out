@@ -21,8 +21,14 @@
     <string name="action_disconnect">ตัดการเชื่อมต่อ</string>
     <string name="action_discoverable">ให้คอมมองเห็น</string>
     <string name="action_send_text">ส่งข้อความยาว</string>
+    <string name="action_help">วิธีเชื่อมต่อ</string>
+    <string name="action_bt_settings">ตั้งค่าบลูทูธ</string>
+    <string name="action_ok">เข้าใจแล้ว</string>
     <string name="action_send">ส่ง</string>
     <string name="action_cancel">ยกเลิก</string>
+
+    <string name="help_title">วิธีเชื่อมต่อกับคอม</string>
+    <string name="help_body">ถ้าเคยจับคู่มือถือกับคอมเครื่องนี้ไว้แล้ว ต้องลบการจับคู่เดิมทิ้งก่อน — ตอนจับคู่ครั้งแรก คอมจะจำเครื่องนี้ไว้เป็น \"โทรศัพท์\" ไม่ใช่ \"คีย์บอร์ด\" และจะจำแบบนั้นตลอดไป การจับคู่เดิมจึงใช้กับแอปนี้ไม่ได้\n\nลำดับที่ถูกต้อง:\n\n1. ที่คอม เข้า Settings → Bluetooth เลือกมือถือเครื่องนี้ แล้วกด Remove device\n\n2. ที่มือถือ กด \"ตั้งค่าบลูทูธ\" ด้านล่าง แล้วกด Forget คอมเครื่องนั้น\n\n3. กลับมาที่แอปนี้ กด \"เริ่มระบบ\" ให้ขึ้นว่าพร้อมแล้ว — ขั้นนี้แหละที่ทำให้เครื่องประกาศตัวเป็นคีย์บอร์ด ต้องทำ *ก่อน* จับคู่เสมอ\n\n4. กด \"ให้คอมมองเห็น\"\n\n5. ที่คอม กด Add device → Bluetooth แล้วเลือกเครื่องนี้ คราวนี้จะขึ้นเป็นไอคอนคีย์บอร์ด แล้วยืนยันรหัสทั้งสองฝั่ง\n\nปกติคอมจะเชื่อมต่อให้เองทันทีหลังจับคู่เสร็จ ถ้าไม่ ค่อยกด \"เลือกอุปกรณ์\" ในแอปแล้วเลือกคอม</string>
 
     <string name="pick_device">เลือกคอมพิวเตอร์ที่จับคู่ไว้</string>
     <string name="no_paired_devices">ยังไม่มีอุปกรณ์ที่จับคู่ไว้ — กด \"ให้คอมมองเห็น\" แล้วจับคู่จากฝั่งคอมก่อน</string>
@@ -68,5 +74,6 @@
     <string name="log_not_connected">ยังไม่ได้เชื่อมต่อกับคอม</string>
     <string name="log_dropped_chars">ส่งไม่ได้ %1$d ตัวอักษร (ต้องสลับภาษาที่ฝั่งคอม)</string>
     <string name="log_bluetooth_off">กรุณาเปิดบลูทูธก่อน</string>
+    <string name="log_connect_timeout">เชื่อมต่อไม่สำเร็จ — ถ้าเคยจับคู่ไว้ก่อนเปิดแอป ต้องลบการจับคู่แล้วจับคู่ใหม่ (กด \"วิธีเชื่อมต่อ\")</string>
     <string name="log_permission_required">แอปต้องการสิทธิ์บลูทูธจึงจะทำงานได้</string>
 </resources>

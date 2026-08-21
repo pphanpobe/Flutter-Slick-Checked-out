@@ -13,6 +13,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -96,12 +97,34 @@ class MainActivity : AppCompatActivity(), BtHidService.Listener, KeyCaptureView.
         binding.disconnectButton.setOnClickListener { service?.disconnect() }
         binding.discoverableButton.setOnClickListener { requestDiscoverable() }
         binding.sendTextButton.setOnClickListener { showBulkTextDialog() }
+        binding.btSettingsButton.setOnClickListener { openBluetoothSettings() }
+        binding.helpButton.setOnClickListener { showHelp() }
 
         setUpModifierButtons()
         buildKeyRow(binding.navKeyRow, NAV_KEYS.map { getString(it.first) to it.second })
         buildKeyRow(binding.functionKeyRow, functionKeys())
 
         renderState(BtHidService.State.IDLE, null)
+
+        // The pairing order is the one thing that reliably breaks this app, so
+        // walk through it once before the user's first attempt.
+        val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
+        if (!prefs.getBoolean(KEY_HELP_SHOWN, false)) {
+            showHelp()
+            prefs.edit().putBoolean(KEY_HELP_SHOWN, true).apply()
+        }
+    }
+
+    private fun showHelp() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.help_title)
+            .setMessage(R.string.help_body)
+            .setPositiveButton(R.string.action_ok, null)
+            .show()
+    }
+
+    private fun openBluetoothSettings() {
+        startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
     }
 
     override fun onStart() {
@@ -352,6 +375,8 @@ class MainActivity : AppCompatActivity(), BtHidService.Listener, KeyCaptureView.
     }
 
     companion object {
+        private const val PREFS = "slick_bt_keyboard"
+        private const val KEY_HELP_SHOWN = "help_shown"
         private const val DISCOVERABLE_SECONDS = 300
         private const val ECHO_LIMIT = 400
 

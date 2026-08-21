@@ -68,6 +68,9 @@ class BtHidService : Service() {
     var connectedDevice: BluetoothDevice? = null
         private set
 
+    /** The device a connection attempt is currently in flight to. */
+    private var pendingDevice: BluetoothDevice? = null
+
     // ------------------------------------------------------------------ setup
 
     override fun onCreate() {
@@ -175,6 +178,7 @@ class BtHidService : Service() {
             when (state) {
                 BluetoothProfile.STATE_CONNECTED -> {
                     connectedDevice = device
+                    pendingDevice = null
                     setState(State.CONNECTED, device)
                 }
 
@@ -218,19 +222,48 @@ class BtHidService : Service() {
 
     // ------------------------------------------------------------ connection
 
+    /**
+     * `connect` often reports success and then simply never completes -- most
+     * commonly because the host paired with this phone before the keyboard was
+     * registered, so it still has us on file as a phone rather than a HID
+     * peripheral. Without this the UI would sit on "connecting" forever, so give
+     * up after a while and say what to do about it.
+     */
+    private val connectTimeout = Runnable {
+        if (state != State.CONNECTING) return@Runnable
+        pendingDevice?.let { device ->
+            try {
+                hidDevice?.disconnect(device)
+            } catch (e: SecurityException) {
+                Log.w(TAG, "disconnect denied", e)
+            }
+        }
+        pendingDevice = null
+        log(getString(R.string.log_connect_timeout))
+        setState(if (hidDevice != null) State.REGISTERED else State.IDLE, null)
+    }
+
     @SuppressLint("MissingPermission")
     fun connect(device: BluetoothDevice) {
-        val hid = hidDevice ?: run {
+        val hid = hidDevice
+        if (hid == null || state == State.IDLE || state == State.REGISTERING) {
             log(getString(R.string.log_not_registered))
             return
         }
+        pendingDevice = device
         setState(State.CONNECTING, device)
+        main.removeCallbacks(connectTimeout)
+        main.postDelayed(connectTimeout, CONNECT_TIMEOUT_MS)
         try {
             if (!hid.connect(device)) {
+                main.removeCallbacks(connectTimeout)
+                pendingDevice = null
                 log(getString(R.string.log_connect_failed))
                 setState(State.REGISTERED, null)
             }
         } catch (e: SecurityException) {
+            main.removeCallbacks(connectTimeout)
+            pendingDevice = null
             log(getString(R.string.log_permission_missing))
             setState(State.REGISTERED, null)
         }
@@ -238,8 +271,12 @@ class BtHidService : Service() {
 
     @SuppressLint("MissingPermission")
     fun disconnect() {
+        main.removeCallbacks(connectTimeout)
         val hid = hidDevice ?: return
-        val device = connectedDevice ?: return
+        // Fall back to the device we are still dialling, so this also cancels a
+        // connection attempt that never completed.
+        val device = connectedDevice ?: pendingDevice ?: return
+        pendingDevice = null
         try {
             hid.disconnect(device)
         } catch (e: SecurityException) {
@@ -320,6 +357,7 @@ class BtHidService : Service() {
     private fun setState(state: State, device: BluetoothDevice?) {
         this.state = state
         main.post {
+            if (state != State.CONNECTING) main.removeCallbacks(connectTimeout)
             updateNotification()
             listener?.onStateChanged(state, device ?: connectedDevice)
         }
@@ -383,6 +421,7 @@ class BtHidService : Service() {
         private const val CHANNEL_ID = "bt_hid_keyboard"
         private const val NOTIFICATION_ID = 42
         private const val REPORT_GAP_MS = 6L
+        private const val CONNECT_TIMEOUT_MS = 15_000L
 
         fun start(context: Context) {
             context.startForegroundService(Intent(context, BtHidService::class.java))

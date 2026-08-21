@@ -71,6 +71,16 @@
                 android:id="@+id/sendTextButton"
                 style="@style/KeyButton"
                 android:text="@string/action_send_text" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btSettingsButton"
+                style="@style/KeyButton"
+                android:text="@string/action_bt_settings" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/helpButton"
+                style="@style/KeyButton"
+                android:text="@string/action_help" />
         </LinearLayout>
     </HorizontalScrollView>
 
