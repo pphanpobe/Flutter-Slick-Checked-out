@@ -3,6 +3,13 @@ package com.slick.btkeyboard
 import android.view.KeyEvent
 
 /**
+ * Which keyboard layout the *host* must be switched to for a character to come
+ * out right. A Bluetooth keyboard sends key positions, so the same key produces
+ * a different glyph depending on this.
+ */
+enum class HostLayout { US, THAI }
+
+/**
  * Translates printable characters and Android key codes into HID usages.
  *
  * A resolved key is packed into a single Int: the low byte is the HID usage and
@@ -68,6 +75,23 @@ object UsKeymap {
         charMap[c]?.let { return it }
         ThaiKedmanee.toUsChar(c)?.let { usChar -> charMap[usChar]?.let { return it } }
         return NONE
+    }
+
+    /**
+     * Characters that land on the same key in both layouts, so typing them never
+     * requires the host to switch.
+     */
+    private val layoutNeutral = setOf(' ', '\n', '\r', '\t', '\b', '\u001B')
+
+    /**
+     * The host layout needed to type [c], or null if the character is either
+     * layout-neutral or cannot be typed at all.
+     */
+    fun requiredLayout(c: Char): HostLayout? = when {
+        c in layoutNeutral -> null
+        ThaiKedmanee.canType(c) -> HostLayout.THAI
+        charMap.containsKey(c) -> HostLayout.US
+        else -> null
     }
 
     /** Key codes an IME may deliver through `InputConnection.sendKeyEvent`. */

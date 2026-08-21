@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:alpha="0.8"
+            android:text="@string/language_intro" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/autoSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/language_auto" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textAppearance="?attr/textAppearanceTitleSmall"
+            android:text="@string/language_key_label" />
+
+        <RadioGroup
+            android:id="@+id/switchKeyGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/keyGrave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/language_key_grave" />
+
+            <RadioButton
+                android:id="@+id/keyAltShift"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/language_key_alt_shift" />
+
+            <RadioButton
+                android:id="@+id/keyCtrlShift"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/language_key_ctrl_shift" />
+
+            <RadioButton
+                android:id="@+id/keyWinSpace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/language_key_win_space" />
+
+            <RadioButton
+                android:id="@+id/keyCtrlSpace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/language_key_ctrl_space" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textAppearance="?attr/textAppearanceTitleSmall"
+            android:text="@string/language_current_label" />
+
+        <RadioGroup
+            android:id="@+id/currentLayoutGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/currentUs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="@string/language_current_us" />
+
+            <RadioButton
+                android:id="@+id/currentThai"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/language_current_thai" />
+        </RadioGroup>
+    </LinearLayout>
+</ScrollView>

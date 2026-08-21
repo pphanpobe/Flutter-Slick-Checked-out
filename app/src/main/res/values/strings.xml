@@ -22,6 +22,25 @@
     <string name="action_discoverable">ให้คอมมองเห็น</string>
     <string name="action_send_text">ส่งข้อความยาว</string>
     <string name="action_help">วิธีเชื่อมต่อ</string>
+    <string name="action_language">ตั้งค่าภาษา</string>
+
+    <string name="layout_button_us">คอม: EN</string>
+    <string name="layout_button_thai">คอม: ไทย</string>
+
+    <string name="language_title">การสลับภาษาที่ฝั่งคอม</string>
+    <string name="language_intro">แป้นพิมพ์บลูทูธส่ง \"ตำแหน่งปุ่ม\" ไม่ได้ส่งตัวอักษร คอมเป็นคนตัดสินว่าจะได้ตัวอะไร การกดเปลี่ยนภาษาบนมือถือจึงเปลี่ยนแค่ในมือถือ ไม่ถึงคอม — แอปต้องกดปุ่มสลับภาษาส่งไปให้คอมแทน</string>
+    <string name="language_auto">สลับภาษาที่คอมให้อัตโนมัติเวลาพิมพ์</string>
+    <string name="language_key_label">ปุ่มที่คอมใช้สลับภาษา</string>
+    <string name="language_key_grave">~ (ปุ่มตัวหนอน)</string>
+    <string name="language_key_alt_shift" translatable="false">Alt + Shift</string>
+    <string name="language_key_ctrl_shift" translatable="false">Ctrl + Shift</string>
+    <string name="language_key_win_space" translatable="false">Win + Space</string>
+    <string name="language_key_ctrl_space" translatable="false">Ctrl + Space</string>
+    <string name="language_current_label">ตอนนี้คอมอยู่ที่ภาษา (ตั้งให้ตรงถ้าไปกดสลับที่คอมเอง)</string>
+    <string name="language_current_us">อังกฤษ</string>
+    <string name="language_current_thai">ไทย</string>
+    <string name="language_switched">สลับภาษาที่คอมเป็น %1$s แล้ว</string>
+    <string name="language_hint">แตะปุ่ม \"คอม: …\" เพื่อสลับภาษาที่คอม / กดค้างเพื่อเปิดหน้าตั้งค่านี้</string>
     <string name="action_bt_settings">ตั้งค่าบลูทูธ</string>
     <string name="action_ok">เข้าใจแล้ว</string>
     <string name="action_send">ส่ง</string>

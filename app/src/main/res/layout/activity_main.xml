@@ -78,6 +78,11 @@
                 android:text="@string/action_bt_settings" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/languageButton"
+                style="@style/KeyButton"
+                android:text="@string/action_language" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/helpButton"
                 style="@style/KeyButton"
                 android:text="@string/action_help" />
@@ -118,11 +123,17 @@
         </FrameLayout>
     </com.google.android.material.card.MaterialCardView>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/modifierGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         app:selectionRequired="false"
         app:singleSelection="false">
 
@@ -158,6 +169,18 @@
             android:textAllCaps="false"
             android:text="@string/mod_gui" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/layoutButton"
+            style="@style/KeyButton"
+            android:layout_marginEnd="0dp"
+            android:text="@string/layout_button_us" />
+    </LinearLayout>
 
     <HorizontalScrollView
         android:layout_width="match_parent"

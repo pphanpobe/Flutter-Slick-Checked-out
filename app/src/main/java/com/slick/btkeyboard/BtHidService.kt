@@ -37,6 +37,20 @@ class BtHidService : Service() {
     interface Listener {
         fun onStateChanged(state: State, device: BluetoothDevice?)
         fun onLog(message: String)
+        fun onHostLayoutChanged(layout: HostLayout)
+    }
+
+    /**
+     * How the host is configured to cycle its input language. The phone's own
+     * IME language switch is local to the phone, so the host has to be told
+     * separately -- by pressing whatever key it listens for.
+     */
+    enum class LayoutSwitchKey(val usage: Int, val modifiers: Int) {
+        GRAVE(0x35, 0),
+        ALT_SHIFT(0, HidSpec.MOD_LEFT_ALT or HidSpec.MOD_LEFT_SHIFT),
+        CTRL_SHIFT(0, HidSpec.MOD_LEFT_CTRL or HidSpec.MOD_LEFT_SHIFT),
+        WIN_SPACE(HidSpec.KEY_SPACE, HidSpec.MOD_LEFT_GUI),
+        CTRL_SPACE(HidSpec.KEY_SPACE, HidSpec.MOD_LEFT_CTRL)
     }
 
     inner class LocalBinder : Binder() {
@@ -71,6 +85,19 @@ class BtHidService : Service() {
     /** The device a connection attempt is currently in flight to. */
     private var pendingDevice: BluetoothDevice? = null
 
+    /**
+     * Our belief about which layout the host is currently in. It is only a
+     * belief -- nothing reports it back -- so the UI lets the user correct it
+     * when the host is switched by hand.
+     */
+    var hostLayout: HostLayout = HostLayout.US
+        private set
+
+    /** Press the switch key automatically when a character needs the other layout. */
+    var autoSwitchLayout = true
+
+    var layoutSwitchKey: LayoutSwitchKey = LayoutSwitchKey.GRAVE
+
     // ------------------------------------------------------------------ setup
 
     override fun onCreate() {
@@ -99,6 +126,7 @@ class BtHidService : Service() {
     fun setListener(listener: Listener?) {
         this.listener = listener
         listener?.onStateChanged(state, connectedDevice)
+        listener?.onHostLayoutChanged(hostLayout)
     }
 
     // -------------------------------------------------------------- profile
@@ -179,6 +207,9 @@ class BtHidService : Service() {
                 BluetoothProfile.STATE_CONNECTED -> {
                     connectedDevice = device
                     pendingDevice = null
+                    // We cannot read the host's layout, so start from the
+                    // common case and let the user correct it.
+                    setHostLayout(HostLayout.US)
                     setState(State.CONNECTED, device)
                 }
 
@@ -310,8 +341,35 @@ class BtHidService : Service() {
         post(report)
     }
 
+    /** Presses the host's language-switch key and records the new layout. */
+    fun switchHostLayout() {
+        setHostLayout(if (hostLayout == HostLayout.US) HostLayout.THAI else HostLayout.US)
+        val key = layoutSwitchKey
+        if (key.usage == 0) {
+            // Alt+Shift and friends are recognised on release, so tap the
+            // modifiers with no key in between.
+            sendModifiersOnly(key.modifiers)
+            post(ByteArray(HidSpec.REPORT_SIZE))
+        } else {
+            sendKey(key.usage, key.modifiers)
+        }
+        // Give the host a moment to actually apply the new layout before the
+        // next character lands.
+        postPause(LAYOUT_SETTLE_MS)
+    }
+
+    /** Corrects our belief about the host layout without pressing anything. */
+    fun assumeHostLayout(layout: HostLayout) = setHostLayout(layout)
+
+    private fun setHostLayout(layout: HostLayout) {
+        if (hostLayout == layout) return
+        hostLayout = layout
+        main.post { listener?.onHostLayoutChanged(layout) }
+    }
+
     /**
-     * Types one character.
+     * Types one character, first switching the host layout if the character
+     * lives on the other one.
      *
      * @return false if the character has no key position on the US or Thai
      *   layout, so the caller can tell the user it was dropped.
@@ -319,6 +377,10 @@ class BtHidService : Service() {
     fun sendChar(c: Char, extraModifiers: Int = 0): Boolean {
         val packed = UsKeymap.forChar(c)
         if (packed == UsKeymap.NONE) return false
+        val needed = UsKeymap.requiredLayout(c)
+        if (autoSwitchLayout && needed != null && needed != hostLayout) {
+            switchHostLayout()
+        }
         var modifiers = extraModifiers
         if (UsKeymap.needsShift(packed)) modifiers = modifiers or HidSpec.MOD_LEFT_SHIFT
         sendKey(UsKeymap.usage(packed), modifiers)
@@ -332,6 +394,18 @@ class BtHidService : Service() {
             if (!sendChar(c, extraModifiers)) dropped++
         }
         return dropped
+    }
+
+    /** Holds the send queue for a moment without emitting a report. */
+    private fun postPause(millis: Long) {
+        if (hidDevice == null || connectedDevice == null) return
+        sender.execute {
+            try {
+                Thread.sleep(millis)
+            } catch (e: InterruptedException) {
+                Thread.currentThread().interrupt()
+            }
+        }
     }
 
     private fun post(report: ByteArray) {
@@ -422,6 +496,7 @@ class BtHidService : Service() {
         private const val NOTIFICATION_ID = 42
         private const val REPORT_GAP_MS = 6L
         private const val CONNECT_TIMEOUT_MS = 15_000L
+        private const val LAYOUT_SETTLE_MS = 60L
 
         fun start(context: Context) {
             context.startForegroundService(Intent(context, BtHidService::class.java))

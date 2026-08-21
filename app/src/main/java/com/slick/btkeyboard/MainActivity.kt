@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import com.slick.btkeyboard.databinding.ActivityMainBinding
+import com.slick.btkeyboard.databinding.DialogLanguageBinding
 import com.slick.btkeyboard.databinding.DialogSendTextBinding
 
 /**
@@ -60,6 +61,7 @@ class MainActivity : AppCompatActivity(), BtHidService.Listener, KeyCaptureView.
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, ibinder: IBinder?) {
             service = (ibinder as? BtHidService.LocalBinder)?.service
+            applyLanguagePrefs()
             service?.setListener(this@MainActivity)
         }
 
@@ -99,11 +101,19 @@ class MainActivity : AppCompatActivity(), BtHidService.Listener, KeyCaptureView.
         binding.sendTextButton.setOnClickListener { showBulkTextDialog() }
         binding.btSettingsButton.setOnClickListener { openBluetoothSettings() }
         binding.helpButton.setOnClickListener { showHelp() }
+        binding.languageButton.setOnClickListener { showLanguageDialog() }
+        binding.layoutButton.setOnClickListener { toggleHostLayout() }
+        binding.layoutButton.setOnLongClickListener {
+            showLanguageDialog()
+            true
+        }
 
         setUpModifierButtons()
         buildKeyRow(binding.navKeyRow, NAV_KEYS.map { getString(it.first) to it.second })
         buildKeyRow(binding.functionKeyRow, functionKeys())
 
+        binding.logText.text = getString(R.string.hint_modifier_lock) +
+            "\n" + getString(R.string.language_hint)
         renderState(BtHidService.State.IDLE, null)
 
         // The pairing order is the one thing that reliably breaks this app, so
@@ -113,6 +123,85 @@ class MainActivity : AppCompatActivity(), BtHidService.Listener, KeyCaptureView.
             showHelp()
             prefs.edit().putBoolean(KEY_HELP_SHOWN, true).apply()
         }
+    }
+
+    // --------------------------------------------------------- host language
+
+    private fun toggleHostLayout() {
+        val hid = service
+        if (hid == null || !hid.isConnected) {
+            toast(getString(R.string.log_not_connected))
+            return
+        }
+        hid.switchHostLayout()
+        val name = getString(
+            if (hid.hostLayout == HostLayout.THAI) R.string.language_current_thai
+            else R.string.language_current_us
+        )
+        binding.logText.text = getString(R.string.language_switched, name)
+    }
+
+    private fun switchKeyPrefs(): BtHidService.LayoutSwitchKey {
+        val stored = getSharedPreferences(PREFS, MODE_PRIVATE).getString(KEY_SWITCH_KEY, null)
+        return runCatching { BtHidService.LayoutSwitchKey.valueOf(stored!!) }
+            .getOrDefault(BtHidService.LayoutSwitchKey.GRAVE)
+    }
+
+    private fun autoSwitchPref(): Boolean =
+        getSharedPreferences(PREFS, MODE_PRIVATE).getBoolean(KEY_AUTO_SWITCH, true)
+
+    private fun applyLanguagePrefs() {
+        service?.let {
+            it.layoutSwitchKey = switchKeyPrefs()
+            it.autoSwitchLayout = autoSwitchPref()
+        }
+    }
+
+    private fun showLanguageDialog() {
+        val view = DialogLanguageBinding.inflate(LayoutInflater.from(this))
+        view.autoSwitch.isChecked = autoSwitchPref()
+        view.switchKeyGroup.check(
+            when (switchKeyPrefs()) {
+                BtHidService.LayoutSwitchKey.GRAVE -> R.id.keyGrave
+                BtHidService.LayoutSwitchKey.ALT_SHIFT -> R.id.keyAltShift
+                BtHidService.LayoutSwitchKey.CTRL_SHIFT -> R.id.keyCtrlShift
+                BtHidService.LayoutSwitchKey.WIN_SPACE -> R.id.keyWinSpace
+                BtHidService.LayoutSwitchKey.CTRL_SPACE -> R.id.keyCtrlSpace
+            }
+        )
+        val layout = service?.hostLayout ?: HostLayout.US
+        view.currentLayoutGroup.check(
+            if (layout == HostLayout.THAI) R.id.currentThai else R.id.currentUs
+        )
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.language_title)
+            .setView(view.root)
+            .setPositiveButton(R.string.action_ok) { _, _ ->
+                val key = when (view.switchKeyGroup.checkedRadioButtonId) {
+                    R.id.keyAltShift -> BtHidService.LayoutSwitchKey.ALT_SHIFT
+                    R.id.keyCtrlShift -> BtHidService.LayoutSwitchKey.CTRL_SHIFT
+                    R.id.keyWinSpace -> BtHidService.LayoutSwitchKey.WIN_SPACE
+                    R.id.keyCtrlSpace -> BtHidService.LayoutSwitchKey.CTRL_SPACE
+                    else -> BtHidService.LayoutSwitchKey.GRAVE
+                }
+                getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                    .putString(KEY_SWITCH_KEY, key.name)
+                    .putBoolean(KEY_AUTO_SWITCH, view.autoSwitch.isChecked)
+                    .apply()
+                applyLanguagePrefs()
+                // Correcting the assumption must not press anything -- the host
+                // is already in the layout the user just picked.
+                service?.assumeHostLayout(
+                    if (view.currentLayoutGroup.checkedRadioButtonId == R.id.currentThai) {
+                        HostLayout.THAI
+                    } else {
+                        HostLayout.US
+                    }
+                )
+            }
+            .setNegativeButton(R.string.action_cancel, null)
+            .show()
     }
 
     private fun showHelp() {
@@ -347,6 +436,13 @@ class MainActivity : AppCompatActivity(), BtHidService.Listener, KeyCaptureView.
         binding.logText.text = message
     }
 
+    override fun onHostLayoutChanged(layout: HostLayout) {
+        binding.layoutButton.setText(
+            if (layout == HostLayout.THAI) R.string.layout_button_thai
+            else R.string.layout_button_us
+        )
+    }
+
     @SuppressLint("MissingPermission")
     private fun renderState(state: BtHidService.State, device: BluetoothDevice?) {
         val name = try {
@@ -377,6 +473,8 @@ class MainActivity : AppCompatActivity(), BtHidService.Listener, KeyCaptureView.
     companion object {
         private const val PREFS = "slick_bt_keyboard"
         private const val KEY_HELP_SHOWN = "help_shown"
+        private const val KEY_SWITCH_KEY = "layout_switch_key"
+        private const val KEY_AUTO_SWITCH = "auto_switch_layout"
         private const val DISCOVERABLE_SECONDS = 300
         private const val ECHO_LIMIT = 400
 
